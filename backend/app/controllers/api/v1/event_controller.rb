@@ -5,9 +5,9 @@ class API::V1::EventsController < ApplicationController
     respond_to :json
     before_action :set_event, only: [:show, :update, :destroy]
     before_action :verify_jwt_token, only: [:create, :update, :destroy]
-  
+    before_action :set_bar
     def index
-      @events = Event.all
+      @events = @bar.events
       render json: { events: @events }, status: :ok
     end
   
@@ -52,6 +52,11 @@ class API::V1::EventsController < ApplicationController
   
     private
   
+    def set_bar
+      @bar = Bar.find(params[:bar_id])
+      render json: { error: 'Bar not found' }, status: :not_found unless @bar
+    end
+
     def set_event
       @event = Event.find_by(id: params[:id])
       render json: { error: 'Event not found' }, status: :not_found unless @event
