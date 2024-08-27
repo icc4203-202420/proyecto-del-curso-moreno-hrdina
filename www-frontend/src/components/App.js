@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import Beers from './components/Beers';
-import Bars from './components/Bars';
-import Events from './components/Events';
-import SearchUsers from './components/SearchUsers';
+import Home from './Home';
+import Beers from './Beers';
+import Bars from './Bars';
+import Events from './Events';
+import SearchUsers from './Users';
 
 function App() {
   return (
