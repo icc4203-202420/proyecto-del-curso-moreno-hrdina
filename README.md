@@ -87,7 +87,7 @@ ActiveStorage viene pre-configurado en la aplicación de backend y algunos de lo
 
 Devise y Devise-JWT también vienen pre-configurados y es posible usar la API del backend autenticando con tokens del tipo JavaScript Web Tokens (JWT).
 
-La aplicación además tiene tests escritos con RSpec para la mayor parte de los modelos, y algunos controladores.
+La aplicación además tiene tests escritos con RSpec para la mayor parte de los modelos, y algunos controladores..
 
 No todas las rutas están especificadas en la aplicación, ni todos los controladores están creados. Completar esto será trabajo de los grupos de proyecto.
 
