@@ -24,7 +24,8 @@ Rails.application.routes.draw do
       resources :bars do
         resources :events, only: [:index]
       end
-      resources :beers
+      resources :beers, only: [] do
+        resources :reviews, only: [:create]
       resources :users do
         resources :reviews, only: [:index]
       end

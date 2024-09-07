@@ -1,5 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Grid, Card, CardContent, Typography, TextField } from '@mui/material';
+import axios from 'axios';
+
+const initialState = { loading: true, error: null, reviews: [] };
+
+function reviewsReducer(state, action) {
+  switch (action.type) {
+    case 'FETCH_SUCCESS':
+      return { ...state, loading: false, reviews: action.payload };
+    case 'FETCH_ERROR':
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+}
+
+const BeerReviews = ({ beerId }) => {
+  const [state, dispatch] = useReducer(reviewsReducer, initialState);
+
+  useEffect(() => {
+    axios.get(`/api/v1/beers/${beerId}/reviews`)
+      .then((response) => {
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      })
+      .catch((error) => {
+        dispatch({ type: 'FETCH_ERROR', payload: error });
+      });
+  }, [beerId]);
+
+  if (state.loading) return <p>Loading...</p>;
+  if (state.error) return <p>Error loading Reviews</p>;
+
+  return (
+    <div>
+      <h3>Reviews</h3>
+      {state.reviews.map((review) => (
+        <div key={review.id}>
+          <p>Rating: {review.rating}</p>
+          <p>{review.text}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 function Beers() {
   const [beers, setBeers] = useState([]);
