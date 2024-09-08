@@ -23,7 +23,7 @@ function Bars() {
   return (
     <Container>
       <TextField
-        label="Bar Search"
+        label="Search Bars"
         variant="outlined"
         fullWidth
         value={searchQuery}

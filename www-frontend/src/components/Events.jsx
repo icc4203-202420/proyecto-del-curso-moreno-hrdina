@@ -16,7 +16,7 @@ function BarEvents() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Events in this Bar
+        Events at this Bar
       </Typography>
       <Grid container spacing={4}>
         {events.map((event) => (
@@ -26,7 +26,7 @@ function BarEvents() {
                 <Typography variant="h5">{event.name}</Typography>
                 <Typography variant="body2">{event.description}</Typography>
                 <Typography variant="body2">
-                  Fecha: {new Date(event.date).toLocaleDateString()}
+                  Date: {new Date(event.date).toLocaleDateString()}
                 </Typography>
               </CardContent>
             </Card>

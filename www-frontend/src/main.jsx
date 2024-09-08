@@ -1,23 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import { Pagination } from '@mui/material';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App'; // Asegúrate de que esta ruta sea correcta
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
-)
-
-const BeerReviewsWithPagination = ({ beerId }) => {
-  const [page, setPage] = useState(1);
-
-  // Modifica el estado y las llamadas API para soportar paginación.
-  return (
-    <div>
-      {/* Renderizado de las evaluaciones */}
-      <Pagination count={totalPages} page={page} onChange={(e, newPage) => setPage(newPage)} />
-    </div>
-  );
-};
+  </React.StrictMode>,
+  document.getElementById('root')
+);

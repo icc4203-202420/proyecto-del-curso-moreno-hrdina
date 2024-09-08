@@ -9,24 +9,21 @@ function SearchUser() {
   };
 
   const handleSearch = () => {
-    console.log(`Searching for user with handle: ${handle}`);
+    // Lógica para realizar búsqueda de usuarios
+    console.log('Searching for user with handle:', handle);
   };
 
   return (
     <Container>
       <TextField
-        label="User Search by @"
+        label="Search User Handle"
         variant="outlined"
         fullWidth
         value={handle}
         onChange={handleInputChange}
-        sx={{ marginBottom: 2 }}
+        sx={{ marginBottom: 4 }}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSearch}
-      >
+      <Button variant="contained" color="primary" onClick={handleSearch}>
         Search
       </Button>
     </Container>

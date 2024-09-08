@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get 'current_user', to: 'current_user#index'
+  
   devise_for :users, path: '', path_names: {
     sign_in: 'api/v1/login',
     sign_out: 'api/v1/logout',
@@ -24,8 +25,11 @@ Rails.application.routes.draw do
       resources :bars do
         resources :events, only: [:index]
       end
+      
       resources :beers, only: [] do
         resources :reviews, only: [:create]
+      end
+
       resources :users do
         resources :reviews, only: [:index]
       end
@@ -33,5 +37,4 @@ Rails.application.routes.draw do
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
     end
   end
-
 end

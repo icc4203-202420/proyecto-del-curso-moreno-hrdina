@@ -1,19 +1,21 @@
 import React from 'react';
+import { Container, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Button, Container } from '@mui/material';
 
 function Home() {
   return (
     <Container>
-      <h1>Weolcome to BeerApp!</h1>
+      <Typography variant="h4" gutterBottom>
+        Welcome to BeerApp!
+      </Typography>
       <Button variant="contained" color="primary" component={Link} to="/beers">
         Beers
       </Button>
       <Button variant="contained" color="secondary" component={Link} to="/bars">
         Bars
       </Button>
-      <Button variant="contained" component={Link} to="/search-user">
-        User Search
+      <Button variant="contained" color="success" component={Link} to="/search-user">
+        Search User
       </Button>
     </Container>
   );
