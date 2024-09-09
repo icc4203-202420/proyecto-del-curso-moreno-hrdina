@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, ListItemIcon, BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, ListItemIcon, BottomNavigation, BottomNavigationAction, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -11,6 +11,8 @@ import Beers from './components/Beers';
 import Bars from './components/Bars';
 import BarEvents from './components/Events';
 import SearchUser from './components/Users';
+import LoginForm from './components/Login';   // Archivos a crear
+import Signup from './components/Signup';     // Archivos a crear
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -26,9 +28,10 @@ function App() {
           sx={{ 
             backgroundColor: '#F59A23', // Cambia el color de fondo aquí
             color: 'white', // Cambia el color del texto aquí
-            display: 'flex'
+            display: 'flex',
+            justifyContent: 'space-between' // Espacia los elementos
           }}
-        >       
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -41,6 +44,13 @@ function App() {
           <Typography variant="h6" noWrap>
             BeerApp
           </Typography>
+          <Button
+            color="inherit"
+            component={Link}
+            to="/login"
+          >
+            Log In
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -85,6 +95,8 @@ function App() {
         <Route path="/bars" element={<Bars />} />
         <Route path="/bar/:id/events" element={<BarEvents />} />
         <Route path="/search-user" element={<SearchUser />} />
+        <Route path="/login" element={<LoginForm />} /> {/* Ruta para Login */}
+        <Route path="/signup" element={<Signup />} /> {/* Ruta para Signup */}
       </Routes>
       <BottomNavigation
         sx={{ width: '100%', position: 'fixed', bottom: 0, backgroundColor: '#F59A23' }}
