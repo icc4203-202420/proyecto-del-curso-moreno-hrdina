@@ -77,7 +77,7 @@ Relaciones:
 
 ![Vista del modelo de dominio de la aplicación](docs/images/entity-model.png)
 
-## Arquitectura del Proyecto Base
+## Arquitectura del Proyecto Base.
 
 El proyecto base está conformado por una aplicación de backend (en directorio `backend`), desarrollada en Rails 7, y otra aplicación de frontend escrita en React, generada con la herramienta Vite (en directorio `www-frontend`). Además, en el futuro se agregará otra aplicación móvil híbrida en `hybrid-frontend`.
 
