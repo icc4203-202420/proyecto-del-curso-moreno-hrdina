@@ -13,9 +13,9 @@ const BarList = () => {
     const fetchBars = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('/api/v1/bars');
-        setBars(response.data);
-        setFilteredBars(response.data); // Inicialmente, mostrar todos los bares
+        const response = await axios.get('http://localhost:3001/api/v1/bars');
+        setBars(response.data.bars);
+        setFilteredBars(response.data.bars); // Inicialmente, mostrar todos los bares
       } catch (error) {
         console.error('Error fetching bars:', error);
       } finally {

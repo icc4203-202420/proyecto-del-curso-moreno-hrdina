@@ -13,9 +13,9 @@ const BeerList = () => {
     const fetchBeers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('api/v1/beers');
-        setBeers(response.data);
-        setFilteredBeers(response.data); // Inicialmente, mostrar todas las cervezas
+        const response = await axios.get('http://localhost:3001/api/v1/beers');
+        setBeers(response.data.beers);
+        setFilteredBeers(response.data.beers); // Inicialmente, mostrar todas las cervezas
       } catch (error) {
         console.error('Error fetching beers:', error);
       } finally {

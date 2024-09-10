@@ -5,14 +5,6 @@ class API::V1::BeersController < ApplicationController
   respond_to :json
   before_action :set_beer, only: [:show, :update, :destroy]
   before_action :verify_jwt_token, only: [:create, :update, :destroy]
-
-  namespace :api do
-    namespace :v1 do
-      resources :beers, only: [:show] do
-        resources :reviews, only: [:index]
-      end
-    end
-  end
   
 
   # GET /beers
