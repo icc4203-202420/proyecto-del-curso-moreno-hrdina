@@ -8,7 +8,8 @@ class API::V1::EventsController < ApplicationController
     before_action :set_bar
     
     def index
-      @events = @bar.events
+      @bar = Bar.find(params[:bar_id]) 
+      @events = @bar.events 
       render json: { events: @events }, status: :ok
     end
   
