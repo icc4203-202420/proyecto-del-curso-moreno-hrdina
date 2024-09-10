@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Home from './components/Home';
 import Beers from './components/Beers';
 import Bars from './components/Bars';
-import BarEvents from './components/Events';
+import Events from './components/Events';
 import SearchUser from './components/Users';
 import LoginForm from './components/Login';   // Archivos a crear
 import Signup from './components/Signup';     // Archivos a crear
@@ -93,7 +93,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/beers" element={<Beers />} />
         <Route path="/bars" element={<Bars />} />
-        <Route path="/bar/:id/events" element={<BarEvents />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/search-user" element={<SearchUser />} />
         <Route path="/login" element={<LoginForm />} /> {/* Ruta para Login */}
         <Route path="/signup" element={<Signup />} /> {/* Ruta para Signup */}
@@ -116,7 +116,7 @@ function App() {
         />
         <BottomNavigationAction
           component={Link}
-          to="/bar/:id/events"
+          to="/events"
           label="Events"
           icon={<SearchIcon />}
         />

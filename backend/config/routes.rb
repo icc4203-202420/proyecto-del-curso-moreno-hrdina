@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get 'current_user', to: 'current_user#index'
+  get 'events', to: 'events#index'
   
   devise_for :users, path: '', path_names: {
     sign_in: 'api/v1/login',
@@ -23,7 +24,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :bars, only: [:index, :show, :create, :update, :destroy] do
-        resources :events, only: [:index]
+        resources :events, only: [:index, :show, :create, :update, :destroy]
       end
       
       resources :beers, only: [:index, :show, :create, :update, :destroy] do
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
+      resources :events, only: [:index]
     end
   end
 end

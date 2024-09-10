@@ -36,7 +36,7 @@ const BarList = () => {
   };
 
   const handleViewDetails = (id) => {
-    navigate(`/bars/${id}`);
+    navigate(`/bar/${id}/events`);
   };
 
   const handleRateBar = (id) => {
