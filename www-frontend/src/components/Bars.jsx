@@ -1,49 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Card, CardContent, Typography, TextField } from '@mui/material';
+import axios from 'axios';
+import { TextField, Button, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 
-function Bars() {
+const BarList = () => {
   const [bars, setBars] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredBars, setFilteredBars] = useState([]);
 
   useEffect(() => {
-    fetch('/api/v1/bars')
-      .then(response => response.json())
-      .then(data => setBars(data.bars)) 
-      .catch(error => console.error('Error fetching bars:', error));
+    // Función para obtener la lista de bares desde la API
+    const fetchBars = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('/api/v1/bars');
+        setBars(response.data);
+        setFilteredBars(response.data); // Inicialmente, mostrar todos los bares
+      } catch (error) {
+        console.error('Error fetching bars:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBars();
   }, []);
 
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
+  // Función para manejar la búsqueda
+  const handleSearch = () => {
+    console.log('Search Term:', searchTerm);
+    const filtered = bars.filter((bar) =>
+      bar.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log('Filtered Bars:', filtered);
+    setFilteredBars(filtered);
   };
-
-  const filteredBars = bars.filter(bar => 
-    bar.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  
 
   return (
-    <Container>
-      <TextField
-        label="Search Bars"
-        variant="outlined"
-        fullWidth
-        value={searchQuery}
-        onChange={handleSearch}
-        sx={{ marginBottom: 4 }}
-      />
-      <Grid container spacing={4}>
-        {filteredBars.map((bar) => (
-          <Grid item xs={12} sm={6} md={4} key={bar.id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5">{bar.name}</Typography>
-                <Typography variant="body2">{bar.address}</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
-  );
-}
+    <div>
+      <h2>Bar List</h2>
 
-export default Bars;
+      <div style={{ marginBottom: '20px' }}>
+        <TextField
+          label="Search Bars"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Button variant="contained" color="primary" onClick={handleSearch} style={{ marginLeft: '10px' }}>
+          Search
+        </Button>
+      </div>
+
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <List>
+          {filteredBars.length > 0 ? (
+            filteredBars.map((bar) => (
+              <ListItem key={bar.id}>
+                <ListItemText primary={bar.name} secondary={`Location: ${bar.location}`} />
+              </ListItem>
+            ))
+          ) : (
+            <p>No bars found.</p>
+          )}
+        </List>
+      )}
+    </div>
+  );
+};
+
+export default BarList;

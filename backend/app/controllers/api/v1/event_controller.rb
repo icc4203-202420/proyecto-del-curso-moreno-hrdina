@@ -6,6 +6,7 @@ class API::V1::EventsController < ApplicationController
     before_action :set_event, only: [:show, :update, :destroy]
     before_action :verify_jwt_token, only: [:create, :update, :destroy]
     before_action :set_bar
+    
     def index
       @events = @bar.events
       render json: { events: @events }, status: :ok
