@@ -40,8 +40,8 @@ const BeerList = () => {
   };
 
   const handleRateBeer = (id) => {
-    console.log(`Rate beer with ID: ${id}`);
-  };
+    navigate(`/beers/${id}/review`);
+  };  
 
   return (
     <div>

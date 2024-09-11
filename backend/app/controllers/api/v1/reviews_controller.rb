@@ -2,6 +2,7 @@ class API::V1::ReviewsController < ApplicationController
   respond_to :json
   before_action :set_user, only: [:index, :create]
   before_action :set_review, only: [:show, :update, :destroy]
+  before_action :set_beer, only: [:create]
 
   def index
     @reviews = Review.where(user: @user)
@@ -17,7 +18,7 @@ class API::V1::ReviewsController < ApplicationController
   end
 
   def create
-    @review = @user.reviews.build(review_params)
+    @review = @beer.reviews.build(review_params.merge(user: @user))
     if @review.save
       render json: @review, status: :created, location: api_v1_review_url(@review)
     else
@@ -49,7 +50,11 @@ class API::V1::ReviewsController < ApplicationController
     @user = User.find(params[:user_id]) 
   end
 
+  def set_beer
+    @beer = Beer.find(params[:beer_id])
+  end
+
   def review_params
-    params.require(:review).permit(:id, :text, :rating, :beer_id)
+    params.require(:review).permit(:text, :rating)
   end
 end

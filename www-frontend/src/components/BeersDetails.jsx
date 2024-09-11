@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { CircularProgress, Typography, Card, CardContent, Grid } from '@mui/material';
+import ReviewForm from './Review'; // Importa el formulario de evaluación si lo usas aquí
 
 const BeerDetails = () => {
-  const { id } = useParams(); // Obtener el ID de la URL
+  const { id } = useParams();
   const [beer, setBeer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,6 +32,9 @@ const BeerDetails = () => {
   return (
     <Card style={{ backgroundColor: '#F59A23', margin: '20px' }}>
       <CardContent>
+        <Typography variant="body1" style={{ color: '#FFF' }}>
+          <img src={beer.image_url} alt={beer.name} style={{ width: '100px', height: 'auto' }} />
+        </Typography>
         <Typography variant="h4" style={{ color: '#FFF' }}>
           {beer.name}
         </Typography>
@@ -38,7 +42,7 @@ const BeerDetails = () => {
           Brand: {beer.brand.name}
         </Typography>
         <Typography variant="h6" style={{ color: '#FFF' }}>
-          Brewery: {beer.brand.brewery.name} {/* Mostrar la cervecería a través de la marca */}
+          Brewery: {beer.brand.brewery.name}
         </Typography>
         <Typography variant="body1" style={{ color: '#FFF' }}>
           Style: {beer.style}
@@ -78,6 +82,35 @@ const BeerDetails = () => {
         ) : (
           <Typography>No bars currently serving this beer.</Typography>
         )}
+        <Button
+          size="small"
+          style={{ backgroundColor: '#F59A23', color: '#FFF', marginTop: '10px' }}
+          onClick={() => navigate(`/beers/${id}/review`)}
+        >
+          Write a Review
+        </Button>
+
+        <Typography variant="h6" style={{ color: '#FFF', marginTop: '20px' }}>
+          Reviews:
+        </Typography>
+        {beer.reviews.length > 0 ? (
+          <Grid container spacing={2}>
+            {beer.reviews.sort((a, b) => (a.user.id === user.id ? -1 : 1)).map((review) => (
+              <Grid item key={review.id}>
+                <Card style={{ backgroundColor: '#FFF', padding: '10px', borderRadius: '5px' }}>
+                  <CardContent>
+                    <Typography variant="h6">{review.user.name}</Typography>
+                    <Typography variant="body1">Rating: {review.rating}</Typography>
+                    <Typography variant="body1">{review.text}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Typography>No reviews yet.</Typography>
+        )}
+        <ReviewForm beerId={id} /> {/* Mostrar el formulario de evaluación */}
       </CardContent>
     </Card>
   );

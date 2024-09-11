@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Home from './components/Home';
 import Beers from './components/Beers';
 import BeersDetails from './components/BeersDetails';
+import ReviewForm from './components/Review';
 import Bars from './components/Bars';
 import Events from './components/Events';
 import SearchUser from './components/Users';
@@ -94,6 +95,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/beers" element={<Beers />} />
         <Route path="/beers/:id" element={<BeersDetails />} />
+        <Route path="/beers/:id/review" element={<ReviewForm />} />
         <Route path="/bars" element={<Bars />} />
         <Route path="/events" element={<Events />} />
         <Route path="/search-user" element={<SearchUser />} />
