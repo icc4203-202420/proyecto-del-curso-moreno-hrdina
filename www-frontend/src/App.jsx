@@ -8,6 +8,7 @@ import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
 import SearchIcon from '@mui/icons-material/Search';
 import Home from './components/Home';
 import Beers from './components/Beers';
+import BeersDetails from './components/BeersDetails';
 import Bars from './components/Bars';
 import Events from './components/Events';
 import SearchUser from './components/Users';
@@ -92,6 +93,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/beers" element={<Beers />} />
+        <Route path="/beers/:id" element={<BeersDetails />} />
         <Route path="/bars" element={<Bars />} />
         <Route path="/events" element={<Events />} />
         <Route path="/search-user" element={<SearchUser />} />

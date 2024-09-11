@@ -22,15 +22,24 @@ class API::V1::BeersController < ApplicationController
   
   # GET /beers/:id
   def show
-    if @beer.image.attached?
-      render json: @beer.as_json.merge({ 
+    beer = Beer.includes(brand: { brewery: {} }, bars: {}).find(params[:id])
+    
+    # Agregar la información de la imagen si está adjunta
+    beer_data = beer.as_json(include: {
+      brand: { include: :brewery },
+      bars: {}
+    }, methods: [:style, :hop, :yeast, :malts, :ibu, :alcohol, :blg, :avg_rating])
+    
+    if beer.image.attached?
+      beer_data.merge!({
         image_url: url_for(@beer.image), 
-        thumbnail_url: url_for(@beer.thumbnail)}),
-        status: :ok
-    else
-      render json: { beer: @beer.as_json }, status: :ok
-    end 
+        thumbnail_url: url_for(@beer.thumbnail)
+      })
+    end
+  
+    render json: beer_data, status: :ok
   end
+  
 
   # POST /beers
   def create
