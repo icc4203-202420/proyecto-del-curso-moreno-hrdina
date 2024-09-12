@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Validación del formulario con Yup
 const validationSchema = Yup.object({
-  email: Yup.string().email('Email no válido').required('El email es requerido'),
-  password: Yup.string().required('La contraseña es requerida').min(6, 'La contraseña debe tener al menos 6 caracteres'),
+  email: Yup.string().email('Invalid Email').required('Email is Required'),
+  password: Yup.string().required('Password is Required').min(6, 'Password must be 6 characters or longer'),
 });
 
 const initialValues = {
@@ -37,17 +37,18 @@ const Login = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await executePost({ data: qs.stringify({user:values}) });
-      setServerError(''); // Limpia el mensaje de error si el login es exitoso
-      navigate('/'); // Redirige a la página principal después de un inicio de sesión exitoso
+      const response = await executePost({ data: qs.stringify({ user: values }) });
+      const token = response.data.token; // Suponiendo que el token se devuelve en la respuesta
+      localStorage.setItem('token', token);
+      setServerError('');
+      navigate('/');
     } catch (err) {
-      setServerError('Credenciales incorrectas. Intenta nuevamente.');
-      console.error('Error en el envío del formulario:', err);
+      setServerError('Incorrect Credentials. Try Again');
+      console.error('Error sending the form:', err);
     } finally {
       setSubmitting(false);
     }
   };
-
   return (
     <Container maxWidth="sm">
       <Box
@@ -60,7 +61,7 @@ const Login = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Iniciar Sesión
+          Log In
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -87,7 +88,7 @@ const Login = () => {
                   as={TextField}
                   fullWidth
                   variant="outlined"
-                  label="Contraseña"
+                  label="Password"
                   name="password"
                   type="password"
                   error={touched.password && Boolean(errors.password)}
@@ -103,7 +104,7 @@ const Login = () => {
                   color="primary"
                   disabled={isSubmitting || loading}
                 >
-                  {loading ? 'Iniciando...' : 'Iniciar Sesión'}
+                  {loading ? 'Starting...' : 'Log In'}
                 </Button>
               </Box>
               {serverError && (
@@ -116,7 +117,7 @@ const Login = () => {
                   variant="text"
                   onClick={() => navigate('/signup')}
                 >
-                  ¿No tienes una cuenta? Regístrate
+                  Don't have an account? Sign Up here
                 </Button>
               </Box>
             </Form>

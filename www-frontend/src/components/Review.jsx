@@ -62,25 +62,44 @@ const ReviewForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    if (state.text.trim().split(' ').length < 15) {
+      dispatch({ type: 'SET_ERROR', payload: 'The review must have at least 15 words.' });
+      return;
+    }
+    if (state.rating < 1 || state.rating > 5) {
+      dispatch({ type: 'SET_ERROR', payload: 'Rating must be between 1 and 5.' });
+      return;
+    }
+  
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
     dispatch({ type: 'SET_SUCCESS', payload: false });
-
+  
     try {
+      const token = localStorage.getItem('authToken');
+      console.log('Token:', token);
       await axios.post(`http://localhost:3001/api/v1/beers/${id}/reviews`, {
         review: {
           text: state.text,
           rating: state.rating
         }
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       dispatch({ type: 'SET_SUCCESS', payload: true });
-      navigate(`/beers/${id}`);
+      navigate(`/beers/${id}`); // Redirige a la página de la cerveza
     } catch (error) {
+      console.error('Error details:', error.response ? error.response.data : error.message);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to submit review.' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
+  
 
   return (
     <Card style={{ backgroundColor: '#A36717', margin: '20px' }}>

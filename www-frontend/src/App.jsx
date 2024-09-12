@@ -13,8 +13,8 @@ import ReviewForm from './components/Review';
 import Bars from './components/Bars';
 import Events from './components/Events';
 import SearchUser from './components/Users';
-import LoginForm from './components/Login';   // Archivos a crear
-import Signup from './components/Signup';     // Archivos a crear
+import LoginForm from './components/Login';   
+import Signup from './components/Signup';     
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -28,10 +28,10 @@ function App() {
       <AppBar position="fixed">
         <Toolbar
           sx={{ 
-            backgroundColor: '#F59A23', // Cambia el color de fondo aquí
-            color: 'white', // Cambia el color del texto aquí
+            backgroundColor: '#F59A23',
+            color: 'white',
             display: 'flex',
-            justifyContent: 'space-between' // Espacia los elementos
+            justifyContent: 'space-between'
           }}
         >
           <IconButton
@@ -60,7 +60,7 @@ function App() {
         open={drawerOpen}
         onClose={toggleDrawer}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
       >
         <List>
@@ -90,7 +90,7 @@ function App() {
           </ListItem>
         </List>
       </Drawer>
-      <Toolbar /> {/* This empty toolbar is necessary to offset the content below the AppBar */}
+      <Toolbar /> 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/beers" element={<Beers />} />
@@ -99,8 +99,8 @@ function App() {
         <Route path="/bars" element={<Bars />} />
         <Route path="/events" element={<Events />} />
         <Route path="/search-user" element={<SearchUser />} />
-        <Route path="/login" element={<LoginForm />} /> {/* Ruta para Login */}
-        <Route path="/signup" element={<Signup />} /> {/* Ruta para Signup */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
       <BottomNavigation
         sx={{ width: '100%', position: 'fixed', bottom: 0, backgroundColor: '#F59A23' }}

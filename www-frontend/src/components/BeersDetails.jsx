@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { CircularProgress, Typography, Card, CardContent, Grid } from '@mui/material';
-import ReviewForm from './Review'; // Importa el formulario de evaluación si lo usas aquí
+import { useParams, useNavigate } from 'react-router-dom';
+import { CircularProgress, Typography, Card, CardContent, Grid, Button } from '@mui/material';
+import ReviewForm from './Review'; // Asegúrate de que el formulario de evaluación esté importado correctamente
 
 const BeerDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Hook para navegación
   const [beer, setBeer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null); // Estado para almacenar el usuario autenticado
 
   useEffect(() => {
     const fetchBeerDetails = async () => {
@@ -23,7 +25,18 @@ const BeerDetails = () => {
       }
     };
 
+    const fetchUser = async () => {
+      // Ejemplo de cómo podrías obtener el usuario autenticado
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/users/current');
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
     fetchBeerDetails();
+    fetchUser();
   }, [id]);
 
   if (loading) return <CircularProgress />;
@@ -95,7 +108,7 @@ const BeerDetails = () => {
         </Typography>
         {beer.reviews.length > 0 ? (
           <Grid container spacing={2}>
-            {beer.reviews.sort((a, b) => (a.user.id === user.id ? -1 : 1)).map((review) => (
+            {beer.reviews.sort((a, b) => (a.user.id === user?.id ? -1 : 1)).map((review) => (
               <Grid item key={review.id}>
                 <Card style={{ backgroundColor: '#FFF', padding: '10px', borderRadius: '5px' }}>
                   <CardContent>

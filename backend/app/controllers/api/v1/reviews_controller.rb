@@ -1,5 +1,6 @@
 class API::V1::ReviewsController < ApplicationController
   respond_to :json
+  before_action :authenticate_user!
   before_action :set_user, only: [:index, :create]
   before_action :set_review, only: [:show, :update, :destroy]
   before_action :set_beer, only: [:create]
@@ -18,11 +19,13 @@ class API::V1::ReviewsController < ApplicationController
   end
 
   def create
-    @review = @beer.reviews.build(review_params.merge(user: @user))
+    Rails.logger.debug "Current user: #{current_user.inspect}"
+    @beer = Beer.find(params[:beer_id])
+    @review = @beer.reviews.build(review_params.merge(user: current_user))
     if @review.save
       render json: @review, status: :created, location: api_v1_review_url(@review)
     else
-      render json: @review.errors, status: :unprocessable_entity
+      render json: { error: @review.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end
 
@@ -47,7 +50,9 @@ class API::V1::ReviewsController < ApplicationController
   end
 
   def set_user
-    @user = User.find(params[:user_id]) 
+    @user = current_user
+    Rails.logger.debug("Current user: #{@user.inspect}")
+    render json: { error: "User not authenticated" }, status: :unauthorized unless @user
   end
 
   def set_beer

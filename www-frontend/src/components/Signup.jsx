@@ -9,12 +9,12 @@ import { useNavigate } from 'react-router-dom';
 
 // Validación del formulario con Yup
 const validationSchema = Yup.object({
-  email: Yup.string().email('Email no válido').required('El email es requerido'),
-  password: Yup.string().required('La contraseña es requerida').min(6, 'La contraseña debe tener al menos 6 caracteres'),
-  first_name: Yup.string().required('El nombre es requerido'),
-  last_name: Yup.string().required('El apellido es requerido'),
-  handle: Yup.string().required('El handle es requerido'),
-  password_confirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden').required('Debes repetir la contraseña'),
+  email: Yup.string().email('Invalid e-mail').required('e-mail is Required'),
+  password: Yup.string().required('LPassword is Required').min(6, 'Password has to be 6 characters or longer'),
+  first_name: Yup.string().required('First Name is Required'),
+  last_name: Yup.string().required('Last Name is Required'),
+  handle: Yup.string().required('A Handle is Required'),
+  password_confirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must be the same').required('Repeat Password'),
 });
 
 const initialValues = {
@@ -49,8 +49,8 @@ const Signup = () => {
       setServerError(''); // Limpia el mensaje de error si el registro es exitoso
       navigate('/login'); // Redirige a la página de login después de un registro exitoso
     } catch (err) {
-      setServerError('Error en el servidor. Intenta nuevamente más tarde.');
-      console.error('Error en el envío del formulario:', err);
+      setServerError('Server Error. Try again later');
+      console.error('Error when sending the form:', err);
     } finally {
       setSubmitting(false);
     }
@@ -64,11 +64,11 @@ const Signup = () => {
           flexDirection: 'column',
           alignItems: 'center',
           width: '100%',
-          mt: 8,
+          mt: 2,
         }}
       >
         <Typography component="h1" variant="h5">
-          Crear Cuenta
+          Create Account
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -82,10 +82,10 @@ const Signup = () => {
                   as={TextField}
                   fullWidth
                   variant="outlined"
-                  label="Nombre"
+                  label="First Name"
                   name="first_name"
                   type="text"
-                  error={touched.firs_name && Boolean(errors.first_name)}
+                  error={touched.first_name && Boolean(errors.first_name)}
                   helperText={touched.first_name && errors.first_name}
                   margin="normal"
                 />
@@ -95,7 +95,7 @@ const Signup = () => {
                   as={TextField}
                   fullWidth
                   variant="outlined"
-                  label="Apellido"
+                  label="Last Name"
                   name="last_name"
                   type="text"
                   error={touched.last_name && Boolean(errors.last_name)}
@@ -134,7 +134,7 @@ const Signup = () => {
                   as={TextField}
                   fullWidth
                   variant="outlined"
-                  label="Contraseña"
+                  label="Password"
                   name="password"
                   type="password"
                   error={touched.password && Boolean(errors.password)}
@@ -147,7 +147,7 @@ const Signup = () => {
                   as={TextField}
                   fullWidth
                   variant="outlined"
-                  label="Confirmar Contraseña"
+                  label="Confirm Password"
                   name="password_confirmation"
                   type="password"
                   error={touched.password_confirmation && Boolean(errors.password_confirmation)}
@@ -163,7 +163,7 @@ const Signup = () => {
                   color="primary"
                   disabled={isSubmitting || loading}
                 >
-                  {loading ? 'Enviando...' : 'Crear Cuenta'}
+                  {loading ? 'Sending...' : 'Create Account'}
                 </Button>
               </Box>
               {serverError && (
