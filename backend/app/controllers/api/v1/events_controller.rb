@@ -4,27 +4,24 @@ class API::V1::EventsController < ApplicationController
 
   respond_to :json
   before_action :set_event, only: [:show, :update, :destroy]
-  before_action :verify_jwt_token, only: [:create, :update, :destroy]
+  before_action :verify_jwt_token, only: [:create, :update, :destroy] # Autenticación JWT para acciones protegidas
+  before_action :set_bar, only: [:create, :update, :destroy] # Cargar bar solo para crear, actualizar o eliminar
 
-  # Elimina :set_bar de las acciones index y show
-  before_action :set_bar, only: [:create, :update, :destroy]
-
+  # Acción index que lista todos los eventos
   def index
     @events = Event.includes(:bar).all
     render json: @events.to_json(
       include: {
         bar: {
           only: [:name] # Incluye solo el nombre del bar en la respuesta JSON
+        }
       }
-    }
     )
   end
 
   def show
     if @event.flyer_image.attached?
-      render json: @event.as_json.merge({ 
-        flyer_image_url: url_for(@event.flyer_image) }),
-        status: :ok
+      render json: @event.as_json.merge({ flyer_image_url: url_for(@event.flyer_image) }), status: :ok
     else
       render json: { event: @event.as_json }, status: :ok
     end
@@ -59,9 +56,17 @@ class API::V1::EventsController < ApplicationController
     end
   end
 
+  def attendees
+    if @event
+      users = @event.users # Obtener todos los usuarios asociados con el evento
+      render json: users, status: :ok
+    else
+      render json: { error: 'Event not found' }, status: :not_found
+    end
+  end
+
   private
 
-  # Elimina este método para las acciones que no lo necesiten
   def set_bar
     Rails.logger.debug "Params: #{params.inspect}"
     @bar = Bar.find_by(id: params[:bar_id])

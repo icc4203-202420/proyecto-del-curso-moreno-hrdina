@@ -14,7 +14,8 @@ import Bars from './components/Bars';
 import Events from './components/Events';
 import SearchUser from './components/Users';
 import LoginForm from './components/Login';   
-import Signup from './components/Signup';     
+import Signup from './components/Signup';  
+import BarEvents from './components/BarEvents';   
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -101,6 +102,7 @@ function App() {
         <Route path="/search-user" element={<SearchUser />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/bar/:id/events" element={<BarEvents />} />
       </Routes>
       <BottomNavigation
         sx={{ width: '100%', position: 'fixed', bottom: 0, backgroundColor: '#F59A23' }}

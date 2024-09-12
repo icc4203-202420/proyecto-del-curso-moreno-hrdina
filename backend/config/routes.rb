@@ -37,6 +37,12 @@ Rails.application.routes.draw do
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
       resources :events, only: [:index]
+
+      resources :events do
+      member do
+        get 'attendees'
+      end
+    end
     end
   end
 end

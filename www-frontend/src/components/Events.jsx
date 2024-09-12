@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Grid, Card, CardContent, Typography, CircularProgress, Alert } from '@mui/material';
+import { Grid, Card, CardContent, Typography, CircularProgress, Alert, Button, List, ListItem } from '@mui/material';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [attendees, setAttendees] = useState({}); // Object to store attendees for each event
 
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
-      setError(null); // Reset error state
+      setError(null);
       try {
         const response = await axios.get('http://localhost:3001/api/v1/events'); // Ajusta la URL si es necesario
         setEvents(response.data);
@@ -24,6 +25,34 @@ const Events = () => {
 
     fetchEvents();
   }, []);
+
+  const handleCheckIn = async (eventId) => {
+    try {
+      await axios.post(`http://localhost:3001/api/v1/events/${eventId}/checkin`);
+      alert('You have checked in successfully!');
+      // Podrías actualizar el estado del evento para reflejar que el usuario ha hecho check-in.
+      setEvents(events.map(event => 
+        event.id === eventId ? { ...event, checkedIn: true } : event
+      ));
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      alert('Failed to check-in. Please try again later.');
+    }
+  };
+  
+
+  const fetchAttendees = async (eventId) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/attendees`);
+      setAttendees((prevState) => ({
+        ...prevState,
+        [eventId]: response.data
+      }));
+    } catch (error) {
+      console.error('Error fetching attendees:', error);
+      alert('Failed to load attendees. Please try again later.');
+    }
+  };
 
   return (
     <div>
@@ -53,6 +82,19 @@ const Events = () => {
                     <Typography color="textSecondary" style={{ color: '#FFF' }}>
                       Location: {event.location} {/* Suponiendo que 'location' esté en la respuesta del evento */}
                     </Typography>
+                    <Button variant="contained" color="primary" onClick={() => handleCheckIn(event.id)}>
+                      Check-in
+                    </Button>
+                    <Button variant="outlined" color="secondary" onClick={() => fetchAttendees(event.id)}>
+                      Show Attendees
+                    </Button>
+                    {attendees[event.id] && (
+                      <List>
+                        {attendees[event.id].map((user) => (
+                          <ListItem key={user.id}>{user.name}</ListItem>
+                        ))}
+                      </List>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
