@@ -85,14 +85,14 @@ const BarList = () => {
                       style={{ backgroundColor: '#F59A23', color: '#FFF' }}
                       onClick={() => handleViewDetails(bar.id)}
                     >
-                      View Details
+                      View Events
                     </Button>
                     <Button
                       size="small"
                       style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }}
                       onClick={() => handleRateBar(bar.id)}
                     >
-                      Rate
+                      Visit
                     </Button>
                   </CardActions>
                 </Card>

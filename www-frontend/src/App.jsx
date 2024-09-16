@@ -16,6 +16,8 @@ import SearchUser from './components/Users';
 import LoginForm from './components/Login';   
 import Signup from './components/Signup';  
 import BarEvents from './components/BarEvents';   
+import MapIcon from '@mui/icons-material/Map';
+import MapComponent from './components/MapComponent';
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -89,6 +91,12 @@ function App() {
             </ListItemIcon>
             <ListItemText primary="Search User" />
           </ListItem>
+          <ListItem button component={Link} to="/map" onClick={toggleDrawer}>
+            <ListItemIcon>
+              <MapIcon />
+            </ListItemIcon>
+            <ListItemText primary="Map" />
+          </ListItem>
         </List>
       </Drawer>
       <Toolbar /> 
@@ -103,6 +111,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/bar/:id/events" element={<BarEvents />} />
+        <Route path="/map" element={<MapComponent />} /> 
       </Routes>
       <BottomNavigation
         sx={{ width: '100%', position: 'fixed', bottom: 0, backgroundColor: '#F59A23' }}

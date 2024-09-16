@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 // Validación del formulario con Yup
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid e-mail').required('e-mail is Required'),
-  password: Yup.string().required('LPassword is Required').min(6, 'Password has to be 6 characters or longer'),
+  password: Yup.string().required('Password is Required').min(6, 'Password has to be 6 characters or longer'),
   first_name: Yup.string().required('First Name is Required'),
   last_name: Yup.string().required('Last Name is Required'),
   handle: Yup.string().required('A Handle is Required'),
@@ -36,7 +36,7 @@ const Signup = () => {
   // Definir el hook para la petición POST
   const [{ data, loading, error }, executePost] = useAxios(
     {
-      url: 'http://localhost:3001/api/v1/signup',
+      url: '/api/v1/signup',
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     },
@@ -45,7 +45,7 @@ const Signup = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await executePost({ data: qs.stringify({user:values}) });
+      await executePost({ data: qs.stringify({ user: values }) });
       setServerError(''); // Limpia el mensaje de error si el registro es exitoso
       navigate('/login'); // Redirige a la página de login después de un registro exitoso
     } catch (err) {
@@ -178,6 +178,5 @@ const Signup = () => {
     </Container>
   );
 };
-
 
 export default Signup;

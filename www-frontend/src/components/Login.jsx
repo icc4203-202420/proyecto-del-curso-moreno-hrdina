@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
@@ -23,23 +23,32 @@ axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
   const [serverError, setServerError] = useState(''); // Estado para manejar el error del servidor
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); // Hook para manejar la navegación
 
   // Definir el hook para la petición POST
   const [{ data, loading, error }, executePost] = useAxios(
     {
-      url: 'http://localhost:3001/api/v1/login',
+      url: '/api/v1/login',
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     },
     { manual: true } // No ejecutar automáticamente, lo haremos manualmente al enviar el formulario
   );
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await executePost({ data: qs.stringify({ user: values }) });
-      const token = response.data.token; // Suponiendo que el token se devuelve en la respuesta
+      const token = response.data.status.data.token; // Suponiendo que el token está en `response.data.status.data.token`
       localStorage.setItem('token', token);
+      setIsAuthenticated(true);
       setServerError('');
       navigate('/');
     } catch (err) {
@@ -49,6 +58,7 @@ const Login = () => {
       setSubmitting(false);
     }
   };
+
   return (
     <Container maxWidth="sm">
       <Box
