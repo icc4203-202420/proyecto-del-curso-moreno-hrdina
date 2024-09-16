@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Grid, Card, CardContent, Typography, CircularProgress, Alert, Button, List, ListItem } from '@mui/material';
 
@@ -7,6 +8,7 @@ const Events = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [attendees, setAttendees] = useState({}); // Object to store attendees for each event
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -26,20 +28,9 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const handleCheckIn = async (eventId) => {
-    try {
-      await axios.post(`http://localhost:3001/api/v1/events/${eventId}/checkin`);
-      alert('You have checked in successfully!');
-      // Podrías actualizar el estado del evento para reflejar que el usuario ha hecho check-in.
-      setEvents(events.map(event => 
-        event.id === eventId ? { ...event, checkedIn: true } : event
-      ));
-    } catch (error) {
-      console.error('Error during check-in:', error);
-      alert('Failed to check-in. Please try again later.');
-    }
+  const handleCheckIn = (eventId) => {
+    navigate(`/check-in/${eventId}`); // Redirige a la página de check-in
   };
-  
 
   const fetchAttendees = async (eventId) => {
     try {
@@ -82,10 +73,10 @@ const Events = () => {
                     <Typography color="textSecondary" style={{ color: '#FFF' }}>
                       Location: {event.location} {/* Suponiendo que 'location' esté en la respuesta del evento */}
                     </Typography>
-                    <Button variant="contained" color="primary" onClick={() => handleCheckIn(event.id)}>
+                    <Button style={{ backgroundColor: '#F59A23', color: '#FFF' }} onClick={() => handleCheckIn(event.id)}>
                       Check-in
                     </Button>
-                    <Button variant="outlined" color="secondary" onClick={() => fetchAttendees(event.id)}>
+                    <Button style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }} onClick={() => fetchAttendees(event.id)}>
                       Show Attendees
                     </Button>
                     {attendees[event.id] && (

@@ -39,8 +39,9 @@ const BarList = () => {
     navigate(`/bar/${id}/events`);
   };
 
-  const handleRateBar = (id) => {
-    console.log(`Rate bar with ID: ${id}`);
+  const handleViewMap = (bar) => {
+    // Redirect to the map page and pass bar's latitude and longitude as query parameters
+    navigate(`/map?lat=${bar.latitude}&lng=${bar.longitude}`);
   };
 
   return (
@@ -48,7 +49,6 @@ const BarList = () => {
       <Grid container justifyContent="center">
         <h2>Bar List</h2>
       </Grid>
-
 
       <Grid container justifyContent="center" alignItems="center" style={{ marginBottom: '20px' }}>
         <TextField
@@ -90,7 +90,7 @@ const BarList = () => {
                     <Button
                       size="small"
                       style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }}
-                      onClick={() => handleRateBar(bar.id)}
+                      onClick={() => handleViewMap(bar)}
                     >
                       Visit
                     </Button>

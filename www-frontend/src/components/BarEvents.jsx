@@ -64,8 +64,7 @@ const BarEvents = () => {
                       Date: {event.date}
                     </Typography>
                     <Button
-                      variant="outlined"
-                      color="secondary"
+                      style={{ backgroundColor: '#F59A23', color: '#FFF' }}
                       onClick={() => fetchAttendees(event.id)}
                     >
                       Show Attendees
