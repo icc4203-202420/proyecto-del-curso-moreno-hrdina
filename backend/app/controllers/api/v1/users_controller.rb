@@ -2,13 +2,26 @@ class API::V1::UsersController < ApplicationController
   respond_to :json
   before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
   before_action :verify_jwt_token, only: [:create, :update, :friendships, :create_friendship]
-  
+
   def index
-    @users = User.includes(:reviews, :address).all   
+    # Verifica si hay un parámetro de búsqueda para el handle
+    if params[:handle].present?
+      # Utiliza LOWER y LIKE para buscar por el inicio del handle
+      @users = User.includes(:reviews, :address).where('LOWER(handle) LIKE ?', "#{params[:handle].downcase}%") 
+      
+      if @users.empty?
+        render json: { message: 'User not found.' }, status: :not_found
+      else
+        render json: @users, status: :ok
+      end
+    else
+      @users = User.includes(:reviews, :address).all   
+      render json: @users, status: :ok
+    end
   end
 
   def show
-    
+    # Método show no modificado
   end
 
   def friendships
@@ -31,10 +44,6 @@ class API::V1::UsersController < ApplicationController
     end
   end
 
-  def show
-  
-  end
-
   def create
     @user = User.new(user_params)
     if @user.save
@@ -45,7 +54,7 @@ class API::V1::UsersController < ApplicationController
   end
 
   def update
-    #byebug
+    # Método update no modificado
     if @user.update(user_params)
       render :show, status: :ok, location: api_v1_users_path(@user)
     else

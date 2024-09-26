@@ -33,15 +33,25 @@ Rails.application.routes.draw do
 
       resources :users do
         resources :reviews, only: [:index]
+        post 'add_friend', to: 'users#create_friendship'
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
-      resources :events, only: [:index]
+      resources :events, only: [:index, :show] do
+        resources :event_pictures, only: [:create] 
+      end
 
       resources :events do
       member do
         get 'attendees'
       end
+
+      resources :friendships, only: [:create] do
+        collection do
+          get 'search'
+        end
+      end
+      
     end
     end
   end

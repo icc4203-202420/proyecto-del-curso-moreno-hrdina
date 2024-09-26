@@ -36,7 +36,7 @@ const Signup = () => {
   // Definir el hook para la petición POST
   const [{ data, loading, error }, executePost] = useAxios(
     {
-      url: '/api/v1/signup',
+      url: 'http://localhost:3001/api/v1/signup',
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     },

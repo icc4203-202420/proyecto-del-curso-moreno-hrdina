@@ -8,6 +8,7 @@ const Events = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [attendees, setAttendees] = useState({}); // Object to store attendees for each event
+  const [loadingAttendees, setLoadingAttendees] = useState({}); // Track loading state for each event's attendees
   const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
@@ -33,15 +34,24 @@ const Events = () => {
   };
 
   const fetchAttendees = async (eventId) => {
+    setLoadingAttendees((prevState) => ({
+      ...prevState,
+      [eventId]: true,
+    }));
     try {
       const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/attendees`);
       setAttendees((prevState) => ({
         ...prevState,
-        [eventId]: response.data
+        [eventId]: response.data,
       }));
     } catch (error) {
       console.error('Error fetching attendees:', error);
-      alert('Failed to load attendees. Please try again later.');
+      setError('Failed to load attendees. Please try again later.');
+    } finally {
+      setLoadingAttendees((prevState) => ({
+        ...prevState,
+        [eventId]: false,
+      }));
     }
   };
 
@@ -73,17 +83,28 @@ const Events = () => {
                     <Typography color="textSecondary" style={{ color: '#FFF' }}>
                       Location: {event.location} {/* Suponiendo que 'location' esté en la respuesta del evento */}
                     </Typography>
-                    <Button style={{ backgroundColor: '#F59A23', color: '#FFF' }} onClick={() => handleCheckIn(event.id)}>
+                    <Button
+                      style={{ backgroundColor: '#F59A23', color: '#FFF' }}
+                      onClick={() => handleCheckIn(event.id)}
+                    >
                       Check-in
                     </Button>
-                    <Button style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }} onClick={() => fetchAttendees(event.id)}>
-                      Show Attendees
+                    <Button
+                      style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }}
+                      onClick={() => fetchAttendees(event.id)}
+                      disabled={loadingAttendees[event.id]}
+                    >
+                      {loadingAttendees[event.id] ? 'Loading Attendees...' : 'Show Attendees'}
                     </Button>
                     {attendees[event.id] && (
                       <List>
-                        {attendees[event.id].map((user) => (
-                          <ListItem key={user.id}>{user.name}</ListItem>
-                        ))}
+                        {attendees[event.id].length > 0 ? (
+                          attendees[event.id].map((user) => (
+                            <ListItem key={user.id}>{user.name}</ListItem>
+                          ))
+                        ) : (
+                          <ListItem>No attendees yet.</ListItem>
+                        )}
                       </List>
                     )}
                   </CardContent>
@@ -91,7 +112,9 @@ const Events = () => {
               </Grid>
             ))
           ) : (
-            <Typography variant="body1" align="center">No events found.</Typography>
+            <Typography variant="body1" align="center">
+              No events found.
+            </Typography>
           )}
         </Grid>
       )}
