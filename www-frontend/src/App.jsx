@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, ListItemIcon, BottomNavigation, BottomNavigationAction, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -20,17 +20,63 @@ import MapIcon from '@mui/icons-material/Map';
 import MapComponent from './components/MapComponent';
 import CheckInPage from './components/CheckInPage';
 import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
 
+  const handleLogin = (token) => {
+    localStorage.setItem('token', token);
+    setIsAuthenticated(true);
+    const decodedToken = jwtDecode(token);
+    localStorage.setItem('user_id', decodedToken.sub);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    setIsAuthenticated(false);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.exp * 1000 < Date.now()) {
+          handleLogout(); // Log out if token is expired
+        } else {
+          setUsername(decodedToken.username);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        if (error instanceof DOMException) {
+          console.error('DOMException occurred while decoding the token:', error.message);
+        } else {
+          console.error('Invalid token:', error);
+        }
+        handleLogout(); // Log out if token is invalid
+      }
+    }
+  }, []);
+
+  // useEffect to redirect unauthenticated users
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!isAuthenticated && !['/login', '/signup'].includes(location.pathname) && !token) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
+
   return (
-    <Router>
+    <>
       <AppBar position="fixed">
         <Toolbar
           sx={{ 
@@ -52,12 +98,8 @@ function App() {
           <Typography variant="h6" noWrap>
             BeerApp
           </Typography>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/login"
-          >
-            Log In
+          <Button onClick ={() => {handleLogout(); toggleDrawer(); }}>
+            Log Out
           </Button>
         </Toolbar>
       </AppBar>
@@ -111,7 +153,7 @@ function App() {
         <Route path="/bars" element={<Bars />} />
         <Route path="/events" element={<Events />} />
         <Route path="/search-user" element={<SearchUser />} />
-        <Route path="/login" element={<LoginForm />} />
+        <Route path="/login" element={<LoginForm tokenHandler={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/bar/:id/events" element={<BarEvents />} />
         <Route path="/map" element={<MapComponent />} /> 
@@ -140,7 +182,7 @@ function App() {
           icon={<SearchIcon />}
         />
       </BottomNavigation>
-    </Router>
+    </>
   );
 }
 

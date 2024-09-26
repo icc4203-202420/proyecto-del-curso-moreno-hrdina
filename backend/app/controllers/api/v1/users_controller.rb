@@ -1,13 +1,38 @@
 class API::V1::UsersController < ApplicationController
   respond_to :json
-  before_action :set_user, only: [:show, :update, :create_friendship]  
+  before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
+  before_action :verify_jwt_token, only: [:create, :update, :friendships, :create_friendship]
   
   def index
     @users = User.includes(:reviews, :address).all   
   end
 
   def show
-    render json: @user, status: :ok
+    
+  end
+
+  def friendships
+    @friends = Friendship.find(params[:id])
+  end
+
+  def create_friendship
+    friend = User.find(params[:friend_id])
+    if friend.nil?
+      render json: { errors: "Friend not found" }, status: :not_found
+      return
+    end
+
+    @friendship = Friendship.new(user_id: @user.id, friend_id: friend.id, bar_id: params[:bar_id])
+
+    if @friendship.save
+      render json: { message: "Friendship created successfully." }, status: :created
+    else
+      render json: { errors: @friendship.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def show
+  
   end
 
   def create
@@ -28,23 +53,6 @@ class API::V1::UsersController < ApplicationController
     end
   end
 
-  def create_friendship
-    friend = User.find_by(id: params[:friend_id])
-    if friend.nil? #revisar si existe el amigo
-      render json: { error: 'Friend not found' }, status: :not_found
-      return
-    end
-    if @user.friends.include?(friend) #revisar si ya existe la friendship
-      render json: { message: 'Friendship already exists' }, status: :ok
-      return
-    end
-    if friendship.save
-      render json: { message: 'Friendship created successfully.' }, status: :created
-    else
-      render json: { errors: friendship.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
   private
 
   def set_user
@@ -59,4 +67,9 @@ class API::V1::UsersController < ApplicationController
               reviews_attributes: [:id, :text, :rating, :beer_id, :_destroy]
             })
   end
+
+  def verify_jwt_token
+    authenticate_user!
+    head :unauthorized unless current_user
+  end  
 end

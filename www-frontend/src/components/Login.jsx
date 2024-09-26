@@ -5,7 +5,7 @@ import { TextField, Button, Box, Container, Typography } from '@mui/material';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 // Validación del formulario con Yup
 const validationSchema = Yup.object({
@@ -21,39 +21,42 @@ const initialValues = {
 // Configuración de axios con axios-hooks
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
-const Login = () => {
+const Login = ({tokenHandler}) => {
   const [serverError, setServerError] = useState(''); // Estado para manejar el error del servidor
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); // Hook para manejar la navegación
 
   // Definir el hook para la petición POST
   const [{ data, loading, error }, executePost] = useAxios(
-    {
-      url: '/api/v1/login',
+  {
+      url: 'http://localhost:3001/api/v1/login',
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     },
     { manual: true } // No ejecutar automáticamente, lo haremos manualmente al enviar el formulario
   );
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await executePost({ data: qs.stringify({ user: values }) });
-      const token = response.data.status.data.token; // Suponiendo que el token está en `response.data.status.data.token`
-      localStorage.setItem('token', token);
-      setIsAuthenticated(true);
-      setServerError('');
-      navigate('/');
+
+      // Extract the token from the headers
+      const receivedToken = response.headers.authorization.split(' ')[1];
+  
+      if (receivedToken) {
+        tokenHandler(receivedToken);
+        setServerError(''); // Clear the error message if login is successful
+        navigate('/'); // Redirect to the root route after a successful login
+      } else {
+        setServerError('No token received. Please try again.');
+      }
     } catch (err) {
-      setServerError('Incorrect Credentials. Try Again');
-      console.error('Error sending the form:', err);
+      console.log("Error: ", err);
+      if (err.response && err.response.status === 401) {
+        setServerError('Correo electrónico o contraseña incorrectos.');
+      } else {
+        setServerError('Error en el servidor. Intenta nuevamente más tarde.');
+      }
+      console.error('Error en el envío del formulario:', err);
     } finally {
       setSubmitting(false);
     }
