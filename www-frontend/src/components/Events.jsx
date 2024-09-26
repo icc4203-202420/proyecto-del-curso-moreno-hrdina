@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Grid, Card, CardContent, Typography, CircularProgress, Alert, Button, List, ListItem } from '@mui/material';
+import Gallery from './Gallery'; // Asegúrate de importar tu componente Gallery
 
 const Events = () => {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [attendees, setAttendees] = useState({}); // Object to store attendees for each event
-  const [loadingAttendees, setLoadingAttendees] = useState({}); // Track loading state for each event's attendees
-  const navigate = useNavigate(); // Hook for navigation
+  const [attendees, setAttendees] = useState({});
+  const [loadingAttendees, setLoadingAttendees] = useState({});
+  const [eventPictures, setEventPictures] = useState({}); // Para almacenar imágenes de eventos
+  const navigate = useNavigate();
 
+  // Fetch events on component mount
   useEffect(() => {
     const fetchEvents = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const response = await axios.get('http://localhost:3001/api/v1/events'); // Ajusta la URL si es necesario
         setEvents(response.data);
@@ -29,29 +30,33 @@ const Events = () => {
     fetchEvents();
   }, []);
 
+  // Handle check-in
   const handleCheckIn = (eventId) => {
-    navigate(`/check-in/${eventId}`); // Redirige a la página de check-in
+    navigate(`/check-in/${eventId}`);
   };
 
+  // Fetch attendees for a specific event
   const fetchAttendees = async (eventId) => {
-    setLoadingAttendees((prevState) => ({
-      ...prevState,
-      [eventId]: true,
-    }));
+    setLoadingAttendees((prev) => ({ ...prev, [eventId]: true }));
     try {
       const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/attendees`);
-      setAttendees((prevState) => ({
-        ...prevState,
-        [eventId]: response.data,
-      }));
+      setAttendees((prev) => ({ ...prev, [eventId]: response.data }));
     } catch (error) {
       console.error('Error fetching attendees:', error);
       setError('Failed to load attendees. Please try again later.');
     } finally {
-      setLoadingAttendees((prevState) => ({
-        ...prevState,
-        [eventId]: false,
-      }));
+      setLoadingAttendees((prev) => ({ ...prev, [eventId]: false }));
+    }
+  };
+
+  // Fetch event pictures for a specific event
+  const fetchEventPictures = async (eventId) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/pictures`); // Cambia la URL según tu API
+      setEventPictures((prev) => ({ ...prev, [eventId]: response.data }));
+    } catch (error) {
+      console.error('Error fetching event pictures:', error);
+      setError('Failed to load event pictures. Please try again later.');
     }
   };
 
@@ -81,20 +86,26 @@ const Events = () => {
                       Bar: {event.bar.name}
                     </Typography>
                     <Typography color="textSecondary" style={{ color: '#FFF' }}>
-                      Location: {event.location} {/* Suponiendo que 'location' esté en la respuesta del evento */}
+                      Location: {event.location}
                     </Typography>
                     <Button
-                      style={{ backgroundColor: '#F59A23', color: '#FFF' }}
+                      style={{ backgroundColor: '#F59A23', color: '#FFF', marginTop: '10px' }}
                       onClick={() => handleCheckIn(event.id)}
                     >
                       Check-in
                     </Button>
                     <Button
-                      style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px' }}
+                      style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px', marginTop: '10px' }}
                       onClick={() => fetchAttendees(event.id)}
                       disabled={loadingAttendees[event.id]}
                     >
                       {loadingAttendees[event.id] ? 'Loading Attendees...' : 'Show Attendees'}
+                    </Button>
+                    <Button
+                      style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px', marginTop: '10px' }}
+                      onClick={() => fetchEventPictures(event.id)} // Botón para cargar fotos
+                    >
+                      Show Gallery
                     </Button>
                     {attendees[event.id] && (
                       <List>
@@ -106,6 +117,10 @@ const Events = () => {
                           <ListItem>No attendees yet.</ListItem>
                         )}
                       </List>
+                    )}
+                    {/* Renderizar galería de fotos si existe */}
+                    {eventPictures[event.id] && eventPictures[event.id].length > 0 && (
+                      <Gallery eventId={event.id} pictures={eventPictures[event.id]} />
                     )}
                   </CardContent>
                 </Card>
