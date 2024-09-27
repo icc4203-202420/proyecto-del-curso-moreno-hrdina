@@ -56,7 +56,7 @@ const Events = () => {
       setEventPictures((prev) => ({ ...prev, [eventId]: response.data }));
     } catch (error) {
       console.error('Error fetching event pictures:', error);
-      setError('Failed to load event pictures. Please try again later.');
+      setError('Failed to load event gallery. Please try again later.');
     }
   };
 
