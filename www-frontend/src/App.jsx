@@ -69,6 +69,7 @@ function App() {
 
   // useEffect to redirect unauthenticated users
   useEffect(() => {
+    console.log('IsAuthenticated:', isAuthenticated);
     const token = localStorage.getItem('token');
     if (!isAuthenticated && !['/login', '/signup'].includes(location.pathname) && !token) {
       navigate('/login');

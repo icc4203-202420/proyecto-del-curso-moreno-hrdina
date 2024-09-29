@@ -29,7 +29,8 @@ function SearchUser() {
 
   const addFriend = async (friendId) => {
     const token = localStorage.getItem('token');
-    const userID = localStorage.getItem('user_id');
+    
+    console.log('Token:', token); // Verifica si el token está disponible
   
     try {
       const response = await axios.post(
@@ -47,6 +48,7 @@ function SearchUser() {
       alert('Error adding friend.');
     }
   };
+  
 
   return (
     <Container>

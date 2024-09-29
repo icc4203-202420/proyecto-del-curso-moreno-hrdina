@@ -29,9 +29,9 @@ class API::V1::UsersController < ApplicationController
   end
 
   def create_friendship
-    friend = User.find(params[:friend_id])
+    friend = User.find_by(id: params[:friend_id]) # Usa find_by para evitar excepciones
     if friend.nil?
-      render json: { errors: "Friend not found" }, status: :not_found
+      render json: { error: "Friend not found" }, status: :not_found
       return
     end
   
@@ -40,9 +40,10 @@ class API::V1::UsersController < ApplicationController
     if @friendship.save
       render json: { message: "Friendship created successfully." }, status: :created
     else
-      render json: { errors: @friendship.errors }, status: :unprocessable_entity
+      render json: { error: @friendship.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
+  
   
 
   def create
