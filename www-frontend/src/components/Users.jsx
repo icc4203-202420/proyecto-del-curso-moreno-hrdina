@@ -28,10 +28,19 @@ function SearchUser() {
   };
 
   const addFriend = async (friendId) => {
+    const token = localStorage.getItem('token');
+    const userID = localStorage.getItem('user_id');
+  
     try {
-      const response = await axios.post(`http://localhost:3001/api/v1/users/add_friend`, {
-        friend_id: friendId
-      });
+      const response = await axios.post(
+        `http://localhost:3001/api/v1/users/${friendId}/add_friend`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       alert(response.data.message); // Notifica al usuario
     } catch (error) {
       console.error('Error adding friend:', error);

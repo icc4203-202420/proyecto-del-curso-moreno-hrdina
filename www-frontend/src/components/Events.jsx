@@ -52,13 +52,13 @@ const Events = () => {
   // Fetch event pictures for a specific event
   const fetchEventPictures = async (eventId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/pictures`); // Cambia la URL según tu API
+      const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/event_pictures`);
       setEventPictures((prev) => ({ ...prev, [eventId]: response.data }));
     } catch (error) {
       console.error('Error fetching event pictures:', error);
       setError('Failed to load event gallery. Please try again later.');
     }
-  };
+  };  
 
   return (
     <div>
@@ -120,7 +120,7 @@ const Events = () => {
                     )}
                     {/* Renderizar galería de fotos si existe */}
                     {eventPictures[event.id] && eventPictures[event.id].length > 0 && (
-                      <Gallery eventId={event.id} pictures={eventPictures[event.id]} />
+                      <Gallery pictures={eventPictures[event.id]} /> /* Renderiza la galería con las fotos */
                     )}
                   </CardContent>
                 </Card>

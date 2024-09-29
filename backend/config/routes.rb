@@ -33,12 +33,12 @@ Rails.application.routes.draw do
 
       resources :users do
         resources :reviews, only: [:index]
-        post 'add_friend', to: 'users#create_friendship'
+        post 'add_friend', to: 'users#create_friendship', on: :member
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
       resources :events, only: [:index, :show] do
-        resources :event_pictures, only: [:create] 
+        resources :event_pictures, only: [:create, :index]
       end
 
       resources :events do

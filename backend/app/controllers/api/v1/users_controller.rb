@@ -34,15 +34,16 @@ class API::V1::UsersController < ApplicationController
       render json: { errors: "Friend not found" }, status: :not_found
       return
     end
-
-    @friendship = Friendship.new(user_id: @user.id, friend_id: friend.id, bar_id: params[:bar_id])
-
+  
+    @friendship = Friendship.new(user_id: @user.id, friend_id: friend.id)
+  
     if @friendship.save
       render json: { message: "Friendship created successfully." }, status: :created
     else
       render json: { errors: @friendship.errors }, status: :unprocessable_entity
     end
   end
+  
 
   def create
     @user = User.new(user_params)

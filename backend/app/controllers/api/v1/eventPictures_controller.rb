@@ -1,5 +1,5 @@
-class Api::V1::EventPicturesController < ApplicationController
-    before_action :authenticate_user! # Si estás usando Devise
+class API::V1::EventPicturesController < ApplicationController
+    before_action :authenticate_user!
   
     def create
       event = Event.find(params[:event_id])
@@ -11,6 +11,21 @@ class Api::V1::EventPicturesController < ApplicationController
       else
         render json: { errors: event_picture.errors.full_messages }, status: :unprocessable_entity
       end
+    end
+
+    def index
+      event = Event.find(params[:event_id])
+      event_pictures = event.event_pictures.with_attached_image
+  
+      pictures_data = event_pictures.map do |event_picture|
+        {
+          id: event_picture.id,
+          image_url: url_for(event_picture.image),
+          user_name: event_picture.user.name # Si quieres mostrar el nombre del usuario que subió la imagen
+        }
+      end
+  
+      render json: pictures_data, status: :ok
     end
   
     private
