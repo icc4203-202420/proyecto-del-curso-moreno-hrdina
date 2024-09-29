@@ -20,6 +20,7 @@ import MapIcon from '@mui/icons-material/Map';
 import MapComponent from './components/MapComponent';
 import CheckInPage from './components/CheckInPage';
 import { jwtDecode } from 'jwt-decode';
+import Gallery from './components/Gallery';
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -159,6 +160,7 @@ function App() {
         <Route path="/bar/:id/events" element={<BarEvents />} />
         <Route path="/map" element={<MapComponent />} /> 
         <Route path="/check-in/:eventId" element={<CheckInPage />} />
+        <Route path="/events/:id/event_pictures" element={<Gallery />} />
       </Routes>
       <BottomNavigation
         sx={{ width: '100%', position: 'fixed', bottom: 0, backgroundColor: '#F59A23' }}

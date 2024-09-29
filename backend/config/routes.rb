@@ -37,13 +37,11 @@ Rails.application.routes.draw do
       end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
-      resources :events, only: [:index, :show] do
-        resources :event_pictures, only: [:create, :index]
-      end
 
       resources :events do
       member do
         get 'attendees'
+        get 'event_pictures', to: 'events#event_pictures'
       end
 
       resources :friendships, only: [:create] do

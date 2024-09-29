@@ -1,11 +1,9 @@
 class API::V1::EventsController < ApplicationController
   include ImageProcessing
-  include Authenticable
 
   respond_to :json
-  before_action :set_event, only: [:show, :update, :destroy]
-  before_action :verify_jwt_token, only: [:create, :update, :destroy] # Autenticación JWT para acciones protegidas
-  before_action :set_bar, only: [:create, :update, :destroy] # Cargar bar solo para crear, actualizar o eliminar
+  before_action :set_event, only: [:show, :update, :destroy, :event_pictures] # Agregado :event_pictures
+  before_action :set_bar, only: [:create, :update, :destroy] 
 
   # Acción index que lista todos los eventos
   def index
@@ -13,7 +11,7 @@ class API::V1::EventsController < ApplicationController
     render json: @events.to_json(
       include: {
         bar: {
-          only: [:name] # Incluye solo el nombre del bar en la respuesta JSON
+          only: [:name]
         }
       }
     )
@@ -24,6 +22,22 @@ class API::V1::EventsController < ApplicationController
       render json: @event.as_json.merge({ flyer_image_url: url_for(@event.flyer_image) }), status: :ok
     else
       render json: { event: @event.as_json }, status: :ok
+    end
+  end
+
+  def event_pictures
+    if @event
+      pictures = @event.event_pictures.includes(:user).map do |picture|
+        {
+          id: picture.id,
+          user_id: picture.user_id,
+          description: picture.description,
+          image_url: url_for(picture.image)
+        }
+      end
+      render json: pictures, status: :ok
+    else
+      render json: { error: 'Event not found' }, status: :not_found
     end
   end
 
@@ -58,7 +72,7 @@ class API::V1::EventsController < ApplicationController
 
   def attendees
     if @event
-      users = @event.users # Obtener todos los usuarios asociados con el evento
+      users = @event.users
       render json: users, status: :ok
     else
       render json: { error: 'Event not found' }, status: :not_found

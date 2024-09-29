@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Grid, Card, CardContent, Typography, CircularProgress, Alert, Button, List, ListItem } from '@mui/material';
-import Gallery from './Gallery'; // Asegúrate de importar tu componente Gallery
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -10,14 +9,13 @@ const Events = () => {
   const [error, setError] = useState(null);
   const [attendees, setAttendees] = useState({});
   const [loadingAttendees, setLoadingAttendees] = useState({});
-  const [eventPictures, setEventPictures] = useState({}); // Para almacenar imágenes de eventos
   const navigate = useNavigate();
 
   // Fetch events on component mount
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/v1/events'); // Ajusta la URL si es necesario
+        const response = await axios.get('http://localhost:3001/api/v1/events');
         setEvents(response.data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -35,6 +33,10 @@ const Events = () => {
     navigate(`/check-in/${eventId}`);
   };
 
+  const handleViewDetails = (id) => {
+    navigate(`/events/${id}/event_pictures`);
+  };
+
   // Fetch attendees for a specific event
   const fetchAttendees = async (eventId) => {
     setLoadingAttendees((prev) => ({ ...prev, [eventId]: true }));
@@ -48,17 +50,6 @@ const Events = () => {
       setLoadingAttendees((prev) => ({ ...prev, [eventId]: false }));
     }
   };
-
-  // Fetch event pictures for a specific event
-  const fetchEventPictures = async (eventId) => {
-    try {
-      const response = await axios.get(`http://localhost:3001/api/v1/events/${eventId}/event_pictures`);
-      setEventPictures((prev) => ({ ...prev, [eventId]: response.data }));
-    } catch (error) {
-      console.error('Error fetching event pictures:', error);
-      setError('Failed to load event gallery. Please try again later.');
-    }
-  };  
 
   return (
     <div>
@@ -103,7 +94,7 @@ const Events = () => {
                     </Button>
                     <Button
                       style={{ backgroundColor: '#F59A23', color: '#FFF', marginLeft: '10px', marginTop: '10px' }}
-                      onClick={() => fetchEventPictures(event.id)} // Botón para cargar fotos
+                      onClick={() => handleViewDetails(event.id)} // Nueva ruta para la galería
                     >
                       Show Gallery
                     </Button>
@@ -117,10 +108,6 @@ const Events = () => {
                           <ListItem>No attendees yet.</ListItem>
                         )}
                       </List>
-                    )}
-                    {/* Renderizar galería de fotos si existe */}
-                    {eventPictures[event.id] && eventPictures[event.id].length > 0 && (
-                      <Gallery pictures={eventPictures[event.id]} /> /* Renderiza la galería con las fotos */
                     )}
                   </CardContent>
                 </Card>
