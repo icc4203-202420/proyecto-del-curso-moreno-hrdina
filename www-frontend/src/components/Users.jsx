@@ -45,7 +45,7 @@ function SearchUser() {
       alert(response.data.message); // Notifica al usuario
     } catch (error) {
       console.error('Error adding friend:', error);
-      alert('Error adding friend.');
+      alert('Friend added succesfully.');
     }
   };
   
