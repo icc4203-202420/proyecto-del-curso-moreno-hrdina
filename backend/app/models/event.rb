@@ -3,7 +3,8 @@ class Event < ApplicationRecord
   has_many :attendances
   has_many :users, through: :attendances
 
-  has_many :event_pictures
+  has_many :event_pictures, dependent: :destroy
+  has_one_attached :flyer
   
   def thumbnail
     flyer.variant(resize_to_limit: [200, nil]).processed

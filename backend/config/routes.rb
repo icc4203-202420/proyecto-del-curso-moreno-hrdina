@@ -35,6 +35,10 @@ Rails.application.routes.draw do
         resources :reviews, only: [:index]
         post 'add_friend', to: 'users#create_friendship', on: :member
       end
+
+      resources :events do
+        resources :event_pictures, only: [:index, :create]
+      end
       
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
 

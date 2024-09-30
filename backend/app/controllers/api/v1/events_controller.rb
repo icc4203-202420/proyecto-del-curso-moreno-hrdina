@@ -2,7 +2,7 @@ class API::V1::EventsController < ApplicationController
   include ImageProcessing
 
   respond_to :json
-  before_action :set_event, only: [:show, :update, :destroy, :event_pictures] # Agregado :event_pictures
+  before_action :set_event, only: [:show, :update, :destroy, :attendees] 
   before_action :set_bar, only: [:create, :update, :destroy] 
 
   # Acción index que lista todos los eventos
@@ -18,26 +18,10 @@ class API::V1::EventsController < ApplicationController
   end
 
   def show
-    if @event.flyer_image.attached?
-      render json: @event.as_json.merge({ flyer_image_url: url_for(@event.flyer_image) }), status: :ok
+    if @event.flyer.attached?
+      render json: @event.as_json.merge({ flyer_image_url: url_for(@event.flyer) }), status: :ok
     else
       render json: { event: @event.as_json }, status: :ok
-    end
-  end
-
-  def event_pictures
-    if @event
-      pictures = @event.event_pictures.includes(:user).map do |picture|
-        {
-          id: picture.id,
-          user_id: picture.user_id,
-          description: picture.description,
-          image_url: url_for(picture.image)
-        }
-      end
-      render json: pictures, status: :ok
-    else
-      render json: { error: 'Event not found' }, status: :not_found
     end
   end
 
@@ -100,6 +84,6 @@ class API::V1::EventsController < ApplicationController
 
   def handle_image_attachment
     decoded_image = decode_image(event_params[:flyer_image_base64])
-    @event.flyer_image.attach(io: decoded_image[:io], filename: decoded_image[:filename], content_type: decoded_image[:content_type])
+    @event.flyer.attach(io: decoded_image[:io], filename: decoded_image[:filename], content_type: decoded_image[:content_type])
   end
 end
